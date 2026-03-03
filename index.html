@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interactivo - FCyE 2do Trimestre</title>
+    
+    <!-- Tailwind CSS (Para el diseño) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (Para los iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- React y ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel (Para compilar JSX en el navegador) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+        .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 pb-20">
+    
+    <!-- Contenedor principal de React -->
+    <div id="root"></div>
+
+    <!-- Código de la Aplicación en React -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [activeSection, setActiveSection] = useState('inicio');
+            const [quizAnswers, setQuizAnswers] = useState({});
+            const [showResults, setShowResults] = useState(false);
+            const [questions, setQuestions] = useState([]);
+
+            // Base de datos de reactivos
+            const bancoReactivos = [
+                // PDA 1: Movimientos sociales y políticos
+                {
+                    pregunta: 'Una comunidad indígena en la sierra organizó marchas pacíficas y asambleas comunitarias para exigir la construcción de un hospital bilingüe y acceso a agua potable. ¿Qué demuestra principalmente esta acción colectiva?',
+                    opciones: [
+                        'Que las demandas sociales solo se escuchan cuando hay violencia extrema.',
+                        'Que la organización y los movimientos sociales son herramientas clave para garantizar derechos económicos y sociales que han sido ignorados.',
+                        'Que los problemas comunitarios se resuelven solos con el paso del tiempo.',
+                        'Que los derechos culturales (idioma) no tienen relación con los derechos de salud.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'La organización colectiva trasciende al lograr que el Estado garantice servicios básicos (salud, agua, educación), transformando realidades de marginación histórica.',
+                    tema: 'Movimientos Sociales'
+                },
+                {
+                    pregunta: 'En las décadas de los 60 y 70, diversos movimientos estudiantiles en América Latina salieron a las calles exigiendo mayor libertad de expresión y el fin del autoritarismo. Aunque sufrieron represión, ¿cuál fue su principal logro a largo plazo?',
+                    opciones: [
+                        'Eliminaron por completo la pobreza en sus países.',
+                        'Fueron un precedente que obligó a los gobiernos a abrir espacios democráticos y garantizar derechos políticos para las juventudes.',
+                        'Lograron que las universidades cerraran definitivamente.',
+                        'Provocaron que los jóvenes dejaran de interesarse en la política.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'La trascendencia de los movimientos a menudo no es inmediata; su legado es haber sentado las bases para las reformas electorales y la apertura democrática que disfrutamos hoy.',
+                    tema: 'Movimientos Sociales'
+                },
+                
+                // PDA 2: Consecuencias de la desigualdad
+                {
+                    pregunta: 'En un municipio, la zona norte cuenta con calles pavimentadas, hospitales de especialidad y fibra óptica, mientras que en la zona sur el agua llega por tandeo y no hay clínicas cercanas. ¿Cuál es la consecuencia más directa de esta situación?',
+                    opciones: [
+                        'Genera una brecha profunda en las oportunidades de desarrollo, afectando la salud y calidad de vida de los habitantes del sur.',
+                        'Fomenta que los habitantes del sur se esfuercen más para mudarse al norte.',
+                        'Demuestra que el acceso a servicios públicos no afecta la calidad de vida.',
+                        'Garantiza que todos los ciudadanos reciban el mismo trato por parte del gobierno.'
+                    ],
+                    correcta: 0,
+                    explicacion: 'La desigualdad socioeconómica espacial (por zonas) vulnera el derecho a una vida digna, pues condiciona la salud, la educación y el bienestar al lugar donde se nace o se vive.',
+                    tema: 'Desigualdad'
+                },
+                {
+                    pregunta: 'Las estadísticas muestran que en las regiones con mayor pobreza, las tasas de deserción escolar en secundaria son tres veces mayores. ¿Qué factor explica mejor esta consecuencia de la desigualdad?',
+                    opciones: [
+                        'Los planes de estudio son demasiado difíciles para esas regiones.',
+                        'Las escuelas en zonas marginadas no aceptan a estudiantes locales.',
+                        'La necesidad económica obliga a las familias a priorizar que los menores trabajen para sobrevivir, sacrificando su educación.',
+                        'Los jóvenes en situación de pobreza prefieren trabajar porque ganan mucho dinero rápido.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'El trabajo infantil y la deserción escolar son consecuencias directas de la falta de ingresos familiares justos. La pobreza estructural limita el derecho fundamental a la educación.',
+                    tema: 'Desigualdad'
+                },
+
+                // PDA 3: Normas, Leyes e Instituciones (Y Tipos de Normas)
+                {
+                    pregunta: 'El reglamento de un deportivo prohíbe el ingreso a personas con tatuajes visibles (Norma Convencional). Sin embargo, un grupo de jóvenes señala que esto viola la Ley Federal para Prevenir la Discriminación (Norma Jurídica). ¿Qué acción participativa es la adecuada?',
+                    opciones: [
+                        'Ignorar el reglamento del deportivo y entrar por la fuerza.',
+                        'Aceptar la norma del deportivo porque los establecimientos privados pueden hacer lo que quieran.',
+                        'Presentar una propuesta formal ante la administración y, de ser necesario, una queja argumentando que ninguna norma convencional puede violar derechos humanos.',
+                        'Hacer un grafiti en las instalaciones del deportivo.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'Las normas convencionales o sociales (reglamentos) NUNCA pueden estar por encima de las normas jurídicas constitucionales que protegen los derechos humanos (como la no discriminación).',
+                    tema: 'Normas y Leyes'
+                },
+                {
+                    pregunta: '¿Cuál es la diferencia fundamental entre una "Norma Moral" y una "Norma Jurídica" (Ley)?',
+                    opciones: [
+                        'La norma moral es escrita por el gobierno, y la jurídica la enseñan los padres.',
+                        'La norma moral rige la conciencia personal sin castigo legal, mientras que la norma jurídica es obligatoria y su incumplimiento genera una sanción por parte del Estado.',
+                        'No hay diferencia, ambas aplican multas económicas si no se cumplen.',
+                        'Las normas jurídicas solo aplican a los políticos, y las morales a los ciudadanos.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'Las normas jurídicas (leyes) son coercitivas (el Estado obliga a cumplirlas), las sociales/convencionales regulan grupos específicos, y las morales dependen de la ética personal.',
+                    tema: 'Normas y Leyes'
+                },
+                {
+                    pregunta: 'A una persona le niegan atención en una oficina gubernamental de manera grosera y discriminatoria. ¿A qué institución autónoma puede acudir para que se investigue este abuso de autoridad?',
+                    opciones: [
+                        'Al banco nacional más cercano.',
+                        'Al mismo funcionario que lo trató mal para pedirle disculpas.',
+                        'A la Comisión Nacional de los Derechos Humanos (CNDH) o su equivalente estatal.',
+                        'A ninguna parte, los funcionarios siempre tienen la razón.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'La CNDH es la institución protectora creada específicamente para recibir quejas, investigar y emitir recomendaciones cuando servidores públicos vulneran los derechos de los ciudadanos.',
+                    tema: 'Normas y Leyes'
+                },
+
+                // PDA 4: Resolución de Conflictos y Paz
+                {
+                    pregunta: 'Dos ejidos campesinos se encuentran en disputa porque ambos reclaman el uso de un manantial. Ha habido amenazas de enfrentamientos armados. Desde la cultura de paz, ¿cuál es la vía más efectiva para resolverlo?',
+                    opciones: [
+                        'Que el gobierno ordene secar el manantial para que nadie pelee.',
+                        'Que el ejido con más habitantes imponga su fuerza para tomar el control total.',
+                        'Instalar una mesa de mediación con un árbitro neutral para alcanzar un acuerdo donde ambos se beneficien del recurso.',
+                        'Ignorar el problema hasta que los ejidatarios se cansen.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'La mediación es la estrategia por excelencia en la cultura de paz. Permite resolver conflictos sobre recursos mediante el diálogo pacífico y acuerdos vinculantes sin llegar a la violencia.',
+                    tema: 'Resolución de Conflictos'
+                },
+                {
+                    pregunta: 'En un país de América Latina que vivió décadas de guerra civil, se lograron firmar Acuerdos de Paz implementando "justicia restaurativa", donde los agresores pedían perdón a las víctimas frente a frente. ¿Qué nos enseña este hecho?',
+                    opciones: [
+                        'Que el diálogo, el reconocimiento del daño y la reparación son bases más sólidas para construir paz que la simple venganza o el castigo.',
+                        'Que los conflictos armados siempre deben terminar con la destrucción total del enemigo.',
+                        'Que las víctimas deben olvidar el pasado sin recibir explicaciones.',
+                        'Que hacer la paz es un proceso inútil en América Latina.'
+                    ],
+                    correcta: 0,
+                    explicacion: 'La cultura de paz prioriza sanar el tejido social. La justicia restaurativa busca reparar el daño en lugar de solo castigar, logrando una paz duradera.',
+                    tema: 'Resolución de Conflictos'
+                },
+
+                // PDA 5: Estado de Derecho
+                {
+                    pregunta: 'El Poder Ejecutivo emite un mandato que limita la libertad de prensa en el país. Semanas después, la Suprema Corte de Justicia (Poder Judicial) revisa el caso y anula ese mandato por ser inconstitucional. ¿Qué principio democrático está en acción?',
+                    opciones: [
+                        'La censura absoluta de los medios.',
+                        'El sistema de contrapesos y división de poderes, donde un poder limita los excesos del otro.',
+                        'La dictadura judicial sobre el ejecutivo.',
+                        'La falta de autoridad del gobierno.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'El Estado de derecho se basa en la división de poderes (Ejecutivo, Legislativo, Judicial). Funcionan como balanzas (contrapesos) para asegurar que ninguna autoridad pueda pasar por encima de la Constitución.',
+                    tema: 'Estado de Derecho'
+                },
+                {
+                    pregunta: 'En tu escuela, el director decide por sí solo suspender los eventos culturales, cambiar los uniformes y modificar los horarios, sin consultar a nadie. ¿Qué acción fortalecería la democracia en este entorno?',
+                    opciones: [
+                        'Acordar que el director tiene el poder absoluto por ser la autoridad máxima.',
+                        'Organizar paros escolares violentos cada semana.',
+                        'Proponer la creación de un Consejo Escolar Participativo que incluya voz y voto de estudiantes, docentes y padres de familia.',
+                        'Que cada salón decida sus propios horarios ignorando a los demás.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'La democracia no solo es para el país, también se vive en la escuela. Los consejos participativos evitan el autoritarismo y garantizan decisiones justas que contemplan a todos los sectores.',
+                    tema: 'Estado de Derecho'
+                },
+
+                // PDA 6: Participación Ciudadana
+                {
+                    pregunta: 'En las elecciones para elegir alcalde, únicamente votó el 25% del padrón electoral. El candidato ganador obtuvo la victoria, pero sus propuestas no benefician a la mayoría de los habitantes. ¿Qué límite del gobierno democrático nos muestra este caso?',
+                    opciones: [
+                        'Que la baja participación ciudadana (apatía) permite que una minoría imponga gobiernos que no representan el interés general.',
+                        'Que la democracia funciona mejor cuando pocas personas salen a votar.',
+                        'Que las elecciones deberían suspenderse para siempre.',
+                        'Que los ciudadanos no tienen responsabilidad en quién los gobierna.'
+                    ],
+                    correcta: 0,
+                    explicacion: 'La democracia requiere ciudadanos activos. Cuando hay un alto nivel de abstencionismo, se pierde la representatividad y las decisiones públicas quedan en manos de unos cuantos.',
+                    tema: 'Participación Ciudadana'
+                },
+                {
+                    pregunta: 'Un grupo de ciudadanos recolecta firmas formales para activar el mecanismo de "Revocación de Mandato" contra un gobernador que no cumplió sus promesas de campaña. ¿Qué representa esta acción?',
+                    opciones: [
+                        'Un acto ilegal para desestabilizar al país.',
+                        'Una forma de participación ciudadana directa para exigir rendición de cuentas y evaluar los límites de sus gobernantes.',
+                        'Una pérdida de tiempo porque los gobernantes nunca pueden ser destituidos.',
+                        'Un ataque de las organizaciones sociales contra los partidos políticos.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'La revocación de mandato es un derecho democrático que permite a los ciudadanos evaluar si un representante debe continuar en el cargo, funcionando como un límite legal al poder del gobierno.',
+                    tema: 'Participación Ciudadana'
+                },
+
+                // PDA 7: Transparencia
+                {
+                    pregunta: 'Una ciudadana solicita, mediante la Ley de Transparencia, los contratos sobre cuánto se gastó en pavimentar su calle. El gobierno municipal se niega a darle los datos argumentando que son "privados". ¿Qué debe hacer la ciudadana?',
+                    opciones: [
+                        'Olvidar el asunto porque el gobierno no tiene obligación de responder.',
+                        'Presentar un recurso de queja/revisión ante el Instituto de Transparencia, pues el gasto de recursos públicos es información de carácter público.',
+                        'Enojar a los vecinos para que bloqueen la calle pavimentada.',
+                        'Aceptar que el dinero de los impuestos es privado una vez que llega al gobierno.'
+                    ],
+                    correcta: 1,
+                    explicacion: 'Los recursos públicos pertenecen a la ciudadanía. Las leyes e institutos de transparencia (como el INAI) existen para obligar a las autoridades a informar en qué gastan cada peso, combatiendo la opacidad.',
+                    tema: 'Transparencia'
+                },
+                {
+                    pregunta: 'En un estado se crea un portal web donde cualquier persona puede ver en tiempo real los ingresos, los gastos en escuelas y los salarios de los políticos locales. ¿Qué principio fortalece directamente esta plataforma?',
+                    opciones: [
+                        'La censura de datos financieros.',
+                        'El control del partido político en el poder.',
+                        'La transparencia proactiva y la rendición de cuentas hacia los ciudadanos.',
+                        'La eliminación de la participación ciudadana en los municipios.'
+                    ],
+                    correcta: 2,
+                    explicacion: 'La transparencia no solo es responder cuando te preguntan (reactiva), sino poner la información a disposición de todos de forma clara y accesible (proactiva), fortaleciendo la confianza en las instituciones.',
+                    tema: 'Transparencia'
+                }
+            ];
+
+            const conceptosClave = [
+                {
+                    id: 'movimientos',
+                    titulo: 'Movimientos Sociales en América Latina',
+                    icon: 'fa-solid fa-users',
+                    color: 'from-fuchsia-500 to-purple-600',
+                    bgColor: 'bg-fuchsia-50',
+                    borderColor: 'border-fuchsia-200',
+                    textColor: 'text-fuchsia-900',
+                    pda: 'Explica la trascendencia de los movimientos sociales y políticos para garantizar el ejercicio de los derechos.',
+                    conceptos: [
+                        { termino: 'Trascendencia Social', icono: '🌟', definicion: 'Impacto a largo plazo de una lucha colectiva. Los logros de los movimientos benefician a generaciones futuras democratizando al país.' },
+                        { termino: 'Derechos Económicos', icono: '💼', definicion: 'Logrados por luchas obreras exigiendo salarios justos, jornadas dignas y seguridad social, erradicando la explotación.' },
+                        { termino: 'Derechos Sociales/Culturales', icono: '🏥', definicion: 'Ejemplo: Comunidades organizándose para garantizar clínicas de salud, agua potable y educación bilingüe.' }
+                    ],
+                    ejemplos: [
+                        'Sindicatos obreros sentando bases de derechos laborales.',
+                        'Movimientos estudiantiles abriendo paso a libertades de expresión.',
+                        'Organización indígena para exigir derechos territoriales y culturales.'
+                    ]
+                },
+                {
+                    id: 'desigualdad',
+                    titulo: 'Consecuencias de la Desigualdad',
+                    icon: 'fa-solid fa-heart-pulse',
+                    color: 'from-rose-500 to-orange-500',
+                    bgColor: 'bg-rose-50',
+                    borderColor: 'border-rose-200',
+                    textColor: 'text-rose-900',
+                    pda: 'Explica las consecuencias de la desigualdad socioeconómica en la calidad de vida y propone acciones.',
+                    conceptos: [
+                        { termino: 'Brecha de Servicios', icono: '🚰', definicion: 'Cuando algunas colonias tienen hospitales y agua, y otras carecen de todo. Esta desigualdad vulnera directamente la salud.' },
+                        { termino: 'Deserción por Pobreza', icono: '📚', definicion: 'En zonas marginadas, la necesidad obliga a priorizar el trabajo infantil, provocando altas tasas de abandono escolar.' },
+                        { termino: 'Garantía de Vida Digna', icono: '⚖️', definicion: 'No basta con el esfuerzo individual; el Estado debe implementar salarios justos y redes de seguridad.' }
+                    ],
+                    ejemplos: [
+                        'Diferencia en la esperanza de vida entre zonas ricas y zonas marginadas.',
+                        'Niños abandonando la escuela por la necesidad económica familiar.',
+                        'Trabajadores con salarios insuficientes frente a herederos de grandes fortunas.'
+                    ]
+                },
+                {
+                    id: 'normas',
+                    titulo: 'Tipos de Normas e Instituciones',
+                    icon: 'fa-solid fa-shield-halved',
+                    color: 'from-blue-500 to-indigo-600',
+                    bgColor: 'bg-blue-50',
+                    borderColor: 'border-blue-200',
+                    textColor: 'text-blue-900',
+                    pda: 'Participa en la transformación de normas y leyes orientadas a favorecer la igualdad y los derechos humanos.',
+                    conceptos: [
+                        { termino: 'Normas Morales', icono: '🧠', definicion: 'Reglas dictadas por la propia conciencia (ej. decir la verdad). Su incumplimiento genera culpa interna, no castigos legales.' },
+                        { termino: 'Normas Sociales/Convencionales', icono: '🏫', definicion: 'Acuerdos de un grupo o institución (ej. reglas escolares). Pueden y deben modificarse si son injustas.' },
+                        { termino: 'Normas Jurídicas (Leyes)', icono: '⚖️', definicion: 'Normas creadas por el Estado, obligatorias para todos. Su violación conlleva sanciones legales. ESTÁN POR ENCIMA de reglamentos.' },
+                        { termino: 'Instituciones Protectoras', icono: '🏛️', definicion: 'Organismos como la CNDH, esenciales para que los ciudadanos defiendan sus derechos ante abusos de autoridades.' }
+                    ],
+                    ejemplos: [
+                        'Estudiantes organizándose para cambiar reglas de vestimenta (Norma escolar).',
+                        'Leyes laborales que prohíben el trabajo infantil y exigen becas (Norma jurídica).',
+                        'Denuncias ante la CNDH por discriminación institucional.'
+                    ]
+                },
+                {
+                    id: 'conflictos',
+                    titulo: 'Cultura de Paz y Conflictos',
+                    icon: 'fa-solid fa-handshake-angle',
+                    color: 'from-emerald-500 to-teal-500',
+                    bgColor: 'bg-emerald-50',
+                    borderColor: 'border-emerald-200',
+                    textColor: 'text-emerald-900',
+                    pda: 'Propone estrategias de mediación desde la cultura de paz para resolver conflictos.',
+                    conceptos: [
+                        { termino: 'Mediación de Conflictos', icono: '🤝', definicion: 'Estrategia donde un tercero neutral facilita el diálogo. Útil en peleas escolares o disputas territoriales.' },
+                        { termino: 'Justicia Restaurativa', icono: '🕊️', definicion: 'Enfoque de paz que prioriza reconocer el daño, pedir perdón y reparar a la víctima, por encima del simple castigo.' },
+                        { termino: 'Diálogo vs. Confrontación', icono: '🗣️', definicion: 'Como demostraron múltiples países en Latinoamérica, la transición de las armas a la mesa de diálogo es vital para la estabilidad.' }
+                    ],
+                    ejemplos: [
+                        'Mesa de diálogo neutral entre dos comunidades peleando por un manantial.',
+                        'Compañeros resolviendo un malentendido hablando con un profesor mediador.',
+                        'Acuerdos de paz enfrentando a víctimas y victimarios para sanar el tejido social.'
+                    ]
+                },
+                {
+                    id: 'democracia',
+                    titulo: 'Rasgos del Estado de Derecho',
+                    icon: 'fa-solid fa-scale-balanced',
+                    color: 'from-indigo-500 to-violet-600',
+                    bgColor: 'bg-indigo-50',
+                    borderColor: 'border-indigo-200',
+                    textColor: 'text-indigo-900',
+                    pda: 'Fortalece los rasgos del Estado de derecho como el imperio de la ley, división de poderes y contrapesos.',
+                    conceptos: [
+                        { termino: 'Imperio de la Ley', icono: '📜', definicion: 'Incluso los gobernantes deben obedecer la ley. Si construyen obras ignorando consultas ciudadanas legales, rompen el Estado de derecho.' },
+                        { termino: 'Contrapesos y División', icono: '⚖️', definicion: 'Mecanismo donde el Poder Judicial puede anular decretos del Poder Ejecutivo si son inconstitucionales, evitando el poder absoluto.' },
+                        { termino: 'Democracia Escolar', icono: '🏫', definicion: 'Evitar directores autoritarios creando Consejos Escolares donde alumnos, padres y maestros tengan voz.' }
+                    ],
+                    ejemplos: [
+                        'La Suprema Corte bloqueando una ley presidencial que atenta contra derechos.',
+                        'Ciudadanos exigiendo que se cumpla la ley de participación a un Alcalde.',
+                        'Movilizaciones contra reformas que buscan censurar la libertad de expresión.'
+                    ]
+                },
+                {
+                    id: 'participacion',
+                    titulo: 'Límites del Gobierno y Participación',
+                    icon: 'fa-solid fa-check-to-slot',
+                    color: 'from-amber-500 to-orange-500',
+                    bgColor: 'bg-amber-50',
+                    borderColor: 'border-amber-200',
+                    textColor: 'text-amber-900',
+                    pda: 'Destaca la importancia de la participación, organizaciones sociales y partidos en México.',
+                    conceptos: [
+                        { termino: 'Apatía Ciudadana', icono: '📉', definicion: 'Cuando hay baja participación en elecciones, minorías organizadas ganan y toman decisiones que no benefician a la mayoría popular.' },
+                        { termino: 'Organizaciones Sociales', icono: '👥', definicion: 'Colectivos ciudadanos y ONG que fungen como observadores y ejercen presión obligando al gobierno a actuar.' },
+                        { termino: 'Mecanismos Democráticos', icono: '🗳️', definicion: 'Herramientas como la "Revocación de Mandato" que permiten a la ciudadanía evaluar y despedir legalmente a un gobernante que incumple.' }
+                    ],
+                    ejemplos: [
+                        'ONG ambientalista publicando irregularidades del gobierno en ecología.',
+                        'Financiamiento a partidos políticos para garantizar competencia equitativa.',
+                        'Ciudadanos juntando firmas para revocar el mandato de un alcalde.'
+                    ]
+                },
+                {
+                    id: 'transparencia',
+                    titulo: 'Transparencia y Rendición de Cuentas',
+                    icon: 'fa-solid fa-magnifying-glass-chart',
+                    color: 'from-cyan-500 to-blue-500',
+                    bgColor: 'bg-cyan-50',
+                    borderColor: 'border-cyan-200',
+                    textColor: 'text-cyan-900',
+                    pda: 'Exige a las autoridades que administren recursos con honestidad, transparencia y legalidad.',
+                    conceptos: [
+                        { termino: 'Recursos Públicos', icono: '💰', definicion: 'El dinero del presupuesto escolar o municipal es de todos. Desviarlo para gastos personales es un delito (corrupción).' },
+                        { termino: 'Leyes de Transparencia', icono: '🔍', definicion: 'Otorgan a cualquier ciudadano el derecho de exigir información de gastos. Si la autoridad se niega, se recurre a institutos de revisión.' },
+                        { termino: 'Plataformas de Datos', icono: '💻', definicion: 'Portales digitales que muestran los gastos del gobierno. Fomentan la "transparencia proactiva" y previenen la corrupción.' }
+                    ],
+                    ejemplos: [
+                        'Ciudadano apelando ante el Instituto de Transparencia por datos negados.',
+                        'Estudiantes exigiendo cuentas claras al director sobre fondos escolares.',
+                        'Organización ciudadana exigiendo sanción contra funcionario que desvió fondos.'
+                    ]
+                }
+            ];
+
+            useEffect(() => {
+                initQuiz();
+            }, []);
+
+            const initQuiz = () => {
+                const shuffledQuestions = [...bancoReactivos].sort(() => Math.random() - 0.5).map(q => {
+                    const opcionesOriginales = q.opciones.map((texto, index) => ({ texto, isCorrect: index === q.correcta }));
+                    const opcionesMezcladas = opcionesOriginales.sort(() => Math.random() - 0.5);
+                    
+                    return {
+                        pregunta: q.pregunta,
+                        tema: q.tema,
+                        explicacion: q.explicacion,
+                        opciones: opcionesMezcladas.map(o => o.texto),
+                        correctIndex: opcionesMezcladas.findIndex(o => o.isCorrect)
+                    };
+                });
+
+                setQuestions(shuffledQuestions);
+                setQuizAnswers({});
+                setShowResults(false);
+            };
+
+            const handleAnswer = (questionIndex, answerIndex) => {
+                setQuizAnswers({ ...quizAnswers, [questionIndex]: answerIndex });
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                questions.forEach((q, index) => {
+                    if (quizAnswers[index] === q.correctIndex) correct++;
+                });
+                return correct;
+            };
+
+            const getAnswerColor = (qIndex, optIndex) => {
+                if (!quizAnswers.hasOwnProperty(qIndex)) return 'bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-700';
+                
+                const isSelected = quizAnswers[qIndex] === optIndex;
+                const isCorrect = optIndex === questions[qIndex].correctIndex;
+                
+                if (isSelected && isCorrect) return 'bg-emerald-100 border-2 border-emerald-500 text-emerald-900 shadow-sm';
+                if (isSelected && !isCorrect) return 'bg-rose-100 border-2 border-rose-500 text-rose-900';
+                if (isCorrect) return 'bg-emerald-50 border-2 border-emerald-400 text-emerald-800'; 
+                return 'bg-slate-50 border-2 border-slate-200 text-slate-400 opacity-60';
+            };
+
+            const InicioView = () => (
+                <div className="max-w-5xl mx-auto p-6 md:p-10 animate-fade-in">
+                    <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                        <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 p-12 text-center text-white relative overflow-hidden">
+                            <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-10">
+                                <i className="fa-solid fa-book-open text-[250px]"></i>
+                            </div>
+                            <div className="relative z-10 flex flex-col items-center">
+                                <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm mb-6 inline-block shadow-lg">
+                                    <i className="fa-solid fa-shield-halved text-5xl text-white"></i>
+                                </div>
+                                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                                    Simulador Interactivo
+                                </h1>
+                                <h2 className="text-2xl md:text-3xl font-medium text-indigo-100 mb-2">
+                                    Formación Cívica y Ética (2do Trimestre)
+                                </h2>
+                                <p className="text-lg md:text-xl text-fuchsia-100 mt-4 max-w-2xl mx-auto">
+                                    Evalúa tu comprensión de los 7 Procesos de Desarrollo de Aprendizaje (PDA), los tipos de normas y los escenarios de participación ciudadana.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="p-8 md:p-12">
+                            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                                <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-8 hover:shadow-lg transition-all group flex flex-col justify-between">
+                                    <div>
+                                        <div className="bg-fuchsia-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                                            <i className="fa-solid fa-book-open text-3xl text-fuchsia-600"></i>
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-slate-800 mb-3">Guía de Conceptos</h3>
+                                        <p className="text-slate-600 leading-relaxed mb-6">
+                                            Repasa visualmente los temas fundamentales: Tipos de Normas, Cultura de Paz, Transparencia, Desigualdad y los hitos sociales de América Latina.
+                                        </p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setActiveSection('conceptos')}
+                                        className="w-full flex items-center justify-center gap-3 bg-white border-2 border-fuchsia-600 text-fuchsia-600 px-6 py-4 rounded-xl font-bold hover:bg-fuchsia-50 transition-colors"
+                                    >
+                                        Explorar Teoría <i className="fa-solid fa-book-open"></i>
+                                    </button>
+                                </div>
+
+                                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl p-8 hover:shadow-lg transition-all group flex flex-col justify-between">
+                                    <div>
+                                        <div className="bg-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-md">
+                                            <i className="fa-solid fa-bullseye text-3xl text-white"></i>
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-slate-800 mb-3">Simulador Interactivo</h3>
+                                        <p className="text-slate-600 leading-relaxed mb-6">
+                                            Evalúa tu comprensión con 15 reactivos aleatorios basados en casos prácticos del Trimestre 2. Recibe retroalimentación inmediata.
+                                        </p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setActiveSection('simulacro')}
+                                        className="w-full flex items-center justify-center gap-3 bg-indigo-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-indigo-700 hover:shadow-md transition-all"
+                                    >
+                                        Comenzar Prueba <i className="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const ConceptosView = () => (
+                <div className="max-w-5xl mx-auto p-4 md:p-8 animate-fade-in">
+                    <div className="sticky top-0 z-50 bg-slate-50/90 backdrop-blur-md pt-4 pb-4 mb-8 border-b border-slate-200 flex items-center gap-4">
+                        <button 
+                            onClick={() => setActiveSection('inicio')}
+                            className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium transition-colors bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-200"
+                        >
+                            <i className="fa-solid fa-house"></i> <span className="hidden sm:inline">Volver</span>
+                        </button>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800 flex-1 truncate">
+                            Guía de Conceptos (2T)
+                        </h2>
+                    </div>
+
+                    <div className="space-y-12">
+                        {conceptosClave.map((tema, index) => (
+                            <div key={tema.id} className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
+                                <div className={`bg-gradient-to-r ${tema.color} p-6 md:p-8 text-white`}>
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm shadow-inner flex items-center justify-center">
+                                            <i className={`${tema.icon} text-3xl`}></i>
+                                        </div>
+                                        <div className="pt-1">
+                                            <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                                                {index + 1}. {tema.titulo}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div className="bg-black/10 rounded-xl p-4 backdrop-blur-sm border border-white/10 mt-4">
+                                        <p className="text-sm md:text-base font-medium leading-relaxed opacity-95">
+                                            <strong>PDA:</strong> {tema.pda}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div className="p-6 md:p-8">
+                                    <div className="mb-8">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <i className="fa-solid fa-lightbulb text-2xl text-slate-400"></i>
+                                            <h4 className="text-xl font-bold text-slate-800">Conceptos Fundamentales</h4>
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            {tema.conceptos.map((concepto, i) => (
+                                                <div key={i} className={`${tema.bgColor} p-5 rounded-2xl border ${tema.borderColor} transition-transform hover:-translate-y-1`}>
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <span className="text-3xl">{concepto.icono}</span>
+                                                        <h5 className={`font-bold text-lg ${tema.textColor}`}>{concepto.termino}</h5>
+                                                    </div>
+                                                    <p className="text-slate-700 leading-relaxed text-sm md:text-base">
+                                                        {concepto.definicion}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <i className="fa-solid fa-star text-2xl text-slate-400"></i>
+                                            <h4 className="text-xl font-bold text-slate-800">Casos Prácticos</h4>
+                                        </div>
+                                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 md:p-6">
+                                            <ul className="space-y-4">
+                                                {tema.ejemplos.map((ejemplo, i) => (
+                                                    <li key={i} className="flex items-start gap-3">
+                                                        <i className="fa-solid fa-circle-check text-emerald-500 mt-1 flex-shrink-0 text-xl"></i>
+                                                        <span className="text-slate-700 leading-relaxed font-medium">{ejemplo}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            const SimulacroView = () => {
+                const score = calculateScore();
+                const totalQuestions = questions.length;
+                const answeredCount = Object.keys(quizAnswers).length;
+                const progress = (answeredCount / totalQuestions) * 100;
+                const isCompleted = answeredCount === totalQuestions;
+
+                return (
+                    <div className="max-w-4xl mx-auto p-4 md:p-8 animate-fade-in">
+                        <div className="sticky top-0 z-50 bg-slate-50/90 backdrop-blur-md pt-4 pb-4 mb-8 border-b border-slate-200 flex justify-between items-center">
+                            <button 
+                                onClick={() => setActiveSection('inicio')}
+                                className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium transition-colors bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-200"
+                            >
+                                <i className="fa-solid fa-house"></i> <span className="hidden sm:inline">Volver</span>
+                            </button>
+                            
+                            <div className="flex-1 max-w-xs mx-4">
+                                <div className="flex justify-between text-sm font-bold text-indigo-900 mb-1">
+                                    <span>Progreso</span>
+                                    <span>{answeredCount} / {totalQuestions}</span>
+                                </div>
+                                <div className="w-full bg-indigo-100 rounded-full h-3">
+                                    <div 
+                                        className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 h-3 rounded-full transition-all duration-500 shadow-inner" 
+                                        style={{ width: `${progress}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+
+                            {isCompleted && !showResults && (
+                                <button 
+                                    onClick={() => { setShowResults(true); window.scrollTo(0, 0); }}
+                                    className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-colors animate-pulse"
+                                >
+                                    Evaluar <i className="fa-solid fa-medal"></i>
+                                </button>
+                            )}
+                        </div>
+
+                        {showResults && (
+                            <div className="mb-12 animate-fade-in-up">
+                                <div className={`bg-white rounded-3xl p-10 text-center shadow-2xl border-t-8 ${score >= 12 ? 'border-emerald-500' : score >= 9 ? 'border-amber-400' : 'border-rose-500'}`}>
+                                    <div className={`inline-flex p-6 rounded-full mb-6 ${score >= 12 ? 'bg-emerald-50 text-emerald-500' : score >= 9 ? 'bg-amber-50 text-amber-500' : 'bg-rose-50 text-rose-500'}`}>
+                                        <i className="fa-solid fa-medal text-7xl"></i>
+                                    </div>
+                                    <h2 className="text-5xl font-extrabold text-slate-800 mb-4">
+                                        {score} <span className="text-3xl text-slate-400 font-medium">/ {totalQuestions} aciertos</span>
+                                    </h2>
+                                    <p className="text-2xl font-medium text-slate-600 mb-8">
+                                        {score >= 12 ? '¡Excelente nivel analítico! Tienes una sólida cultura ciudadana y dominas las temáticas del trimestre. 🌟' : 
+                                         score >= 9 ? 'Buen trabajo. Repasa las retroalimentaciones en las preguntas sobre normas o instituciones. 👍' : 
+                                         'Es necesario reforzar conceptos. ¡No te desanimes, revisa tus errores en la guía de estudio y aprende de ellos! 📚'}
+                                    </p>
+                                    <button 
+                                        onClick={initQuiz}
+                                        className="inline-flex items-center justify-center gap-3 px-8 py-4 font-bold text-white transition-all bg-slate-800 rounded-xl hover:bg-slate-700 shadow-lg text-lg"
+                                    >
+                                        <i className="fa-solid fa-rotate-right"></i> Intentar Nuevo Simulacro
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="space-y-10">
+                            {questions.map((q, qIndex) => {
+                                const isAnswered = quizAnswers.hasOwnProperty(qIndex);
+                                
+                                return (
+                                    <div key={qIndex} className={`bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 ${isAnswered ? 'opacity-100' : 'hover:shadow-lg'}`}>
+                                        <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-2">
+                                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-800 font-bold text-sm">
+                                                {qIndex + 1}
+                                            </span>
+                                            <span className="text-xs font-bold uppercase tracking-wider text-fuchsia-600 bg-fuchsia-50 px-3 py-1 rounded-full border border-fuchsia-100">
+                                                {q.tema}
+                                            </span>
+                                        </div>
+
+                                        <div className="p-6 md:p-8">
+                                            <h3 className="text-xl md:text-2xl font-medium text-slate-800 leading-relaxed mb-8">
+                                                {q.pregunta}
+                                            </h3>
+
+                                            <div className="space-y-4">
+                                                {q.opciones.map((opcion, oIndex) => (
+                                                    <button
+                                                        key={oIndex}
+                                                        onClick={() => handleAnswer(qIndex, oIndex)}
+                                                        disabled={isAnswered}
+                                                        className={`w-full text-left p-5 rounded-xl transition-all font-medium flex items-start gap-4 ${getAnswerColor(qIndex, oIndex)} ${!isAnswered ? 'cursor-pointer hover:-translate-y-1' : 'cursor-default'}`}
+                                                    >
+                                                        <span className="flex-shrink-0 mt-0.5 font-bold opacity-70 text-lg">
+                                                            {String.fromCharCode(65 + oIndex)})
+                                                        </span>
+                                                        <span className="flex-1 leading-relaxed text-lg">{opcion}</span>
+                                                        
+                                                        {isAnswered && oIndex === q.correctIndex && (
+                                                            <i className="fa-solid fa-circle-check text-emerald-500 flex-shrink-0 text-2xl mt-0.5"></i>
+                                                        )}
+                                                        {isAnswered && quizAnswers[qIndex] === oIndex && oIndex !== q.correctIndex && (
+                                                            <i className="fa-solid fa-circle-xmark text-rose-500 flex-shrink-0 text-2xl mt-0.5"></i>
+                                                        )}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            {isAnswered && (
+                                                <div className={`mt-8 p-6 rounded-2xl border ${
+                                                    quizAnswers[qIndex] === q.correctIndex 
+                                                        ? 'bg-emerald-50 border-emerald-100' 
+                                                        : 'bg-indigo-50 border-indigo-100'
+                                                } animate-fade-in-up`}>
+                                                    <div className="flex items-start gap-4">
+                                                        <div className={`p-3 rounded-full flex-shrink-0 ${quizAnswers[qIndex] === q.correctIndex ? 'bg-emerald-100' : 'bg-indigo-100'}`}>
+                                                            {quizAnswers[qIndex] === q.correctIndex ? 
+                                                                <i className="fa-solid fa-star text-emerald-600 text-xl"></i> : 
+                                                                <i className="fa-solid fa-circle-info text-indigo-600 text-xl"></i>
+                                                            }
+                                                        </div>
+                                                        <div className="pt-0.5">
+                                                            <h4 className={`font-bold text-lg mb-1 ${quizAnswers[qIndex] === q.correctIndex ? 'text-emerald-800' : 'text-indigo-800'}`}>
+                                                                {quizAnswers[qIndex] === q.correctIndex ? '¡Excelente Análisis!' : 'Repaso de Concepto'}
+                                                            </h4>
+                                                            <p className={`leading-relaxed text-lg ${quizAnswers[qIndex] === q.correctIndex ? 'text-emerald-700' : 'text-indigo-700'}`}>
+                                                                {q.explicacion}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <main>
+                    {activeSection === 'inicio' && <InicioView />}
+                    {activeSection === 'conceptos' && <ConceptosView />}
+                    {activeSection === 'simulacro' && <SimulacroView />}
+                </main>
+            );
+        }
+
+        // Renderizado inicial de la aplicación React en el navegador
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

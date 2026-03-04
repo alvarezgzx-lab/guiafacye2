@@ -40,7 +40,7 @@
             const [showResults, setShowResults] = useState(false);
             const [questions, setQuestions] = useState([]);
 
-            // Base de datos de reactivos (Sin cambios, mantiene el rigor del examen)
+            // Base de datos de reactivos (Alineados al examen real)
             const bancoReactivos = [
                 {
                     pregunta: 'Una comunidad indígena en la sierra organizó marchas pacíficas y asambleas comunitarias para exigir la construcción de un hospital bilingüe y acceso a agua potable. ¿Qué demuestra principalmente esta acción colectiva?',
@@ -224,131 +224,125 @@
                 }
             ];
 
-            // Base de datos de conceptos con definiciones sencillas y ejemplos concretos
+            // Base de datos de conceptos ENRIQUECIDA con la bibliografía del libro
             const conceptosClave = [
                 {
                     id: 'movimientos',
-                    titulo: 'Movimientos Sociales',
+                    titulo: 'Derechos y Movimientos Sociales',
                     icon: 'fa-solid fa-users',
                     color: 'from-fuchsia-500 to-purple-600',
                     bgColor: 'bg-fuchsia-50',
                     borderColor: 'border-fuchsia-200',
                     textColor: 'text-fuchsia-900',
-                    pda: 'Explica la importancia de unirse para exigir derechos.',
+                    pda: 'Comprende los tipos de derechos humanos y cómo los movimientos los exigen.',
                     conceptos: [
                         { 
-                            termino: 'Trascendencia Social', 
-                            icono: '🌟', 
-                            definicion: 'Es la huella o el cambio positivo que deja un movimiento social para el futuro.',
-                            ejemplo: 'Las marchas de estudiantes en los años 60 lograron que hoy tengamos más libertad para expresar nuestras ideas sin ir a la cárcel.'
+                            termino: 'Derechos Civiles y Políticos', 
+                            icono: '🗳️', 
+                            definicion: 'Garantizan las libertades individuales (vida, expresión) y permiten al ciudadano participar en la vida política (votar y ser votado).',
+                            ejemplo: 'Los movimientos estudiantiles de México (1968) y Argentina que exigían apertura democrática y autonomía en las universidades.'
                         },
                         { 
-                            termino: 'Derechos Económicos', 
+                            termino: 'Derechos Económicos y Sociales', 
                             icono: '💼', 
-                            definicion: 'Son las leyes que garantizan condiciones justas para trabajar y ganar dinero.',
-                            ejemplo: 'Gracias a los sindicatos del pasado, hoy los trabajadores tienen derecho a un salario mínimo y a jornadas de 8 horas.'
+                            definicion: 'Aseguran el trabajo digno, alimentación, salud y educación. Exigen condiciones materiales básicas para vivir bien.',
+                            ejemplo: 'Las huelgas obreras de 1910 a 1920 en Latam que lograron reducir la jornada laboral a 8 horas.'
                         },
                         { 
-                            termino: 'Derechos Sociales', 
-                            icono: '🏥', 
-                            definicion: 'Son los derechos que permiten a las personas desarrollarse, como tener educación y salud.',
-                            ejemplo: 'Una comunidad indígena exigiendo que se construya una clínica o una escuela en su propio idioma.'
+                            termino: 'Movimiento Social', 
+                            icono: '🌟', 
+                            definicion: 'Acción colectiva, a veces espontánea y sin financiamiento formal, donde las personas se unen para exigir el respeto a sus derechos.',
+                            ejemplo: 'El Movimiento de Madres de Plaza de Mayo en Argentina exigiendo justicia por sus hijos desaparecidos.'
                         }
                     ]
                 },
                 {
                     id: 'desigualdad',
-                    titulo: 'Consecuencias de la Desigualdad',
+                    titulo: 'Desigualdad y Calidad de Vida',
                     icon: 'fa-solid fa-heart-pulse',
                     color: 'from-rose-500 to-orange-500',
                     bgColor: 'bg-rose-50',
                     borderColor: 'border-rose-200',
                     textColor: 'text-rose-900',
-                    pda: 'Comprende cómo la falta de dinero afecta la calidad de vida.',
+                    pda: 'Analiza los diferentes tipos de desigualdad y su impacto en el bienestar.',
                     conceptos: [
                         { 
-                            termino: 'Brecha de Servicios', 
-                            icono: '🚰', 
-                            definicion: 'Es la gran diferencia que existe cuando unas colonias tienen todo (luz, agua, hospitales) y otras no tienen nada.',
-                            ejemplo: 'En una misma ciudad, unas personas tienen internet de alta velocidad y otras no tienen ni siquiera agua potable en su casa.'
+                            termino: 'Desigualdad Económica', 
+                            icono: '💰', 
+                            definicion: 'Privación material y falta de acceso a bienes. Ocurre cuando la riqueza está mal repartida.',
+                            ejemplo: 'En México, el 1% de la población acumula el 31% de toda la riqueza del país.'
                         },
                         { 
-                            termino: 'Deserción por Pobreza', 
-                            icono: '📚', 
-                            definicion: 'Ocurre cuando los jóvenes tienen que abandonar la escuela para trabajar y ayudar a su familia a sobrevivir.',
-                            ejemplo: 'Un niño de secundaria que deja de ir a clases porque necesita vender dulces para poder comer ese día.'
-                        },
-                        { 
-                            termino: 'Vida Digna', 
+                            termino: 'Desigualdad Sociocultural', 
                             icono: '⚖️', 
-                            definicion: 'Es tener cubiertas todas tus necesidades básicas (comida, salud, casa segura) para vivir bien y sin carencias extremas.',
-                            ejemplo: 'Que el gobierno garantice hospitales gratuitos para que nadie muera de una enfermedad curable solo por no tener dinero.'
+                            definicion: 'Trato diferente que sufre una persona por su género, origen étnico, religión o nivel educativo.',
+                            ejemplo: 'La brecha salarial: cuando a una mujer le pagan menos que a un hombre por hacer el mismo trabajo.'
+                        },
+                        { 
+                            termino: 'Calidad de Vida', 
+                            icono: '🏠', 
+                            definicion: 'Es el nivel de bienestar de una persona que une aspectos objetivos (salud, casa), subjetivos (autoestima) y sociales (apoyos del gobierno).',
+                            ejemplo: 'Vivir en un entorno con hospitales equipados, tener tiempo libre y sentirse seguro caminando por la calle.'
                         }
                     ]
                 },
                 {
                     id: 'normas',
-                    titulo: 'Tipos de Normas',
+                    titulo: 'Normas, Leyes e Instituciones',
                     icon: 'fa-solid fa-shield-halved',
                     color: 'from-blue-500 to-indigo-600',
                     bgColor: 'bg-blue-50',
                     borderColor: 'border-blue-200',
                     textColor: 'text-blue-900',
-                    pda: 'Diferencia los tipos de reglas y conoce a las instituciones que te protegen.',
+                    pda: 'Distingue los tipos de reglas, cómo se crean y quién nos protege.',
                     conceptos: [
                         { 
-                            termino: 'Normas Morales', 
+                            termino: 'Normas Morales y Sociales', 
                             icono: '🧠', 
-                            definicion: 'Son tus reglas personales sobre lo que está bien o mal. Si no las cumples, solo sientes culpa, no hay policía ni castigo legal.',
-                            ejemplo: 'Decir la verdad a tus papás o ayudar a un anciano a cruzar la calle.'
+                            definicion: 'Las morales son principios éticos de tu conciencia (generan culpa). Las sociales son tradiciones o reglamentos de un grupo (generan rechazo social). No hay policía que te castigue.',
+                            ejemplo: 'Ceder el asiento (moral) o cumplir el reglamento de uniforme de la escuela (social).'
                         },
                         { 
-                            termino: 'Normas Convencionales', 
-                            icono: '🏫', 
-                            definicion: 'Son reglas que inventa un grupo o lugar específico para convivir en orden. Pueden modificarse si son injustas.',
-                            ejemplo: 'El reglamento de tu escuela que pide llevar el uniforme o no correr en los pasillos.'
-                        },
-                        { 
-                            termino: 'Normas Jurídicas', 
+                            termino: 'Normas Jurídicas (Leyes)', 
                             icono: '⚖️', 
-                            definicion: 'Son las leyes del gobierno. Son obligatorias, aplican castigos y están por encima de las demás normas.',
-                            ejemplo: 'La ley que prohíbe robar o la ley que prohíbe que te discriminen en cualquier lugar.'
+                            definicion: 'Establecidas por el Estado, escritas en códigos, y son OBLIGATORIAS. Su incumplimiento genera sanciones legales como multas o cárcel.',
+                            ejemplo: 'La Ley General de Salud o el código penal.'
                         },
                         { 
-                            termino: 'Instituciones Protectoras', 
-                            icono: '🏛️', 
-                            definicion: 'Son oficinas del gobierno encargadas de defenderte si una autoridad abusa de su poder.',
-                            ejemplo: 'La CNDH (Comisión Nacional de los Derechos Humanos) a donde puedes quejarte si un policía te trata mal sin razón.'
+                            termino: 'Iniciativa Ciudadana', 
+                            icono: '📝', 
+                            definicion: 'Mecanismo donde los ciudadanos comunes pueden proponer crear o modificar una ley si juntan el 0.13% de firmas del padrón electoral.',
+                            ejemplo: 'Un grupo de jóvenes presentando un proyecto al Congreso para proteger los datos personales en internet (Ley Olimpia/Ingrid).'
                         }
                     ]
                 },
                 {
                     id: 'conflictos',
-                    titulo: 'Cultura de Paz',
+                    titulo: 'Conflictos y Cultura de Paz',
                     icon: 'fa-solid fa-handshake-angle',
                     color: 'from-emerald-500 to-teal-500',
                     bgColor: 'bg-emerald-50',
                     borderColor: 'border-emerald-200',
                     textColor: 'text-emerald-900',
-                    pda: 'Propone formas pacíficas de resolver problemas.',
+                    pda: 'Comprende el conflicto y propone la mediación para solucionarlo pacíficamente.',
                     conceptos: [
+                        { 
+                            termino: 'Partes y Problema', 
+                            icono: '⚡', 
+                            definicion: 'Un conflicto ocurre cuando dos "partes" (personas o grupos) sienten que sus intereses, valores o aspiraciones chocan y se oponen entre sí.',
+                            ejemplo: 'El conflicto en Cochabamba (Guerra del Agua) entre el pueblo boliviano y una empresa trasnacional que subió el precio.'
+                        },
                         { 
                             termino: 'Mediación', 
                             icono: '🤝', 
-                            definicion: 'Es cuando una persona neutral (que no está a favor de nadie) ayuda a dos personas peleadas a platicar y llegar a un acuerdo.',
-                            ejemplo: 'Un maestro ayudando a dos grupos de alumnos a ponerse de acuerdo para compartir la cancha de fútbol en el recreo.'
+                            definicion: 'Proceso donde un tercero imparcial (neutral) ayuda a las partes a investigar, aclarar y proponer acuerdos ganar-ganar.',
+                            ejemplo: 'La intervención de la Unasur para sentar a dialogar al gobierno y manifestantes en Bolivia, logrando derogar un impuesto.'
                         },
                         { 
-                            termino: 'Justicia Restaurativa', 
+                            termino: 'Cultura de Guerra vs Paz', 
                             icono: '🕊️', 
-                            definicion: 'Se enfoca en que quien hizo daño reconozca su error, pida perdón y lo repare, en lugar de solo buscar venganza.',
-                            ejemplo: 'En lugar de solo expulsar a quien rompió una ventana, hacer que limpie, pague el vidrio y se disculpe con la escuela.'
-                        },
-                        { 
-                            termino: 'Cultura de Paz', 
-                            icono: '🗣️', 
-                            definicion: 'Es cambiar los golpes, las armas o los gritos por el diálogo y el respeto mutuo para resolver cualquier problema.',
-                            ejemplo: 'Las comunidades de campesinos que prefieren sentarse a negociar el uso del agua de un río en lugar de pelear por él.'
+                            definicion: 'La cultura de guerra impone condiciones con violencia. La cultura de paz busca el respeto a los derechos, el diálogo y la justicia restaurativa (reparar el daño).',
+                            ejemplo: 'Los Acuerdos de San Andrés entre el gobierno y el EZLN (Ejército Zapatista) buscando transitar de las armas al diálogo político.'
                         }
                     ]
                 },
@@ -360,85 +354,85 @@
                     bgColor: 'bg-indigo-50',
                     borderColor: 'border-indigo-200',
                     textColor: 'text-indigo-900',
-                    pda: 'Conoce cómo se controla el poder en un país democrático.',
+                    pda: 'Conoce la estructura del poder para evitar el autoritarismo.',
                     conceptos: [
                         { 
-                            termino: 'Imperio de la Ley', 
-                            icono: '📜', 
-                            definicion: 'Significa que la ley aplica para TODOS por igual. Nadie está por encima de ella, ni siquiera el presidente.',
-                            ejemplo: 'Si el alcalde de una ciudad comete un delito, debe ser juzgado igual que cualquier otro ciudadano.'
-                        },
-                        { 
                             termino: 'División de Poderes', 
-                            icono: '⚖️', 
-                            definicion: 'Es repartir el poder del gobierno en varias partes (Ejecutivo, Legislativo y Judicial) para que nadie tenga el control total.',
-                            ejemplo: 'Si el Presidente (Ejecutivo) quiere hacer una ley injusta, los Jueces (Judicial) pueden frenarlo y cancelarla.'
+                            icono: '🏛️', 
+                            definicion: 'Para evitar dictaduras, el poder se divide en 3: Ejecutivo (gobierna), Legislativo (hace leyes) y Judicial (imparte justicia).',
+                            ejemplo: 'El Congreso de la Unión (Legislativo) aprueba una ley, y la Suprema Corte (Judicial) verifica que no viole la Constitución.'
                         },
                         { 
-                            termino: 'Democracia Escolar', 
-                            icono: '🏫', 
-                            definicion: 'Es tomar en cuenta la opinión de alumnos, maestros y padres para tomar decisiones juntos.',
-                            ejemplo: 'Crear un Consejo Escolar para elegir de qué color pintar la escuela, en lugar de que el director lo decida solo.'
+                            termino: 'Contrapesos', 
+                            icono: '⚖️', 
+                            definicion: 'Es el "peso" que se pone en la parte contraria para mantener el equilibrio. Los poderes se vigilan para que nadie se exceda en sus funciones.',
+                            ejemplo: 'Si el presidente (Ejecutivo) propone algo ilegal, los Jueces pueden frenarlo, funcionando como balanzas de poder.'
+                        },
+                        { 
+                            termino: 'Servidores Públicos', 
+                            icono: '👮', 
+                            definicion: 'Toda persona que trabaja para el Estado. Pueden ser elegidos por voto (Alcalde) o designados por nombramiento (Policía, Maestro).',
+                            ejemplo: 'Los bomberos, médicos del IMSS y diputados son servidores públicos; deben trabajar para la ciudadanía.'
                         }
                     ]
                 },
                 {
                     id: 'participacion',
-                    titulo: 'Participación Ciudadana',
+                    titulo: 'Participación Ciudadana y Social',
                     icon: 'fa-solid fa-check-to-slot',
                     color: 'from-amber-500 to-orange-500',
                     bgColor: 'bg-amber-50',
                     borderColor: 'border-amber-200',
                     textColor: 'text-amber-900',
-                    pda: 'Entiende por qué es importante involucrarse en la sociedad.',
+                    pda: 'Entiende cómo y por qué organizarnos y vigilar al gobierno.',
                     conceptos: [
                         { 
-                            termino: 'Apatía Ciudadana', 
-                            icono: '📉', 
-                            definicion: 'Es la falta de interés por participar. Si la mayoría de la gente no vota ni opina, unos cuantos terminan decidiendo por todos.',
-                            ejemplo: 'En una elección donde casi nadie vota, termina ganando un candidato que no apoya a la comunidad.'
-                        },
-                        { 
-                            termino: 'Organizaciones Sociales', 
-                            icono: '👥', 
-                            definicion: 'Son grupos de ciudadanos que se unen para vigilar al gobierno, exigir mejoras o cuidar el medio ambiente.',
-                            ejemplo: 'Un grupo de vecinos que se organiza para limpiar un parque y obligar al alcalde a poner alumbrado público.'
-                        },
-                        { 
-                            termino: 'Revocación de Mandato', 
+                            termino: 'Mecanismos Ciudadanos', 
                             icono: '🗳️', 
-                            definicion: 'Es un mecanismo legal que permite a los ciudadanos votar para quitar de su puesto a un gobernante si no está cumpliendo.',
-                            ejemplo: 'Los ciudadanos recolectan firmas para despedir a un gobernador antes de que termine su sexenio porque no cumplió sus promesas.'
+                            definicion: 'Herramientas directas de opinión. Ejemplos: Plebiscito (opinar sobre un acto de gobierno), Referéndum (votar para aprobar una ley) y Revocación de Mandato (despedir a un gobernante).',
+                            ejemplo: 'Juntar firmas para quitar a un alcalde que robó dinero antes de que termine su periodo (Revocación).'
+                        },
+                        { 
+                            termino: 'Organizaciones Sociales (OSC)', 
+                            icono: '👥', 
+                            definicion: 'Grupos privados, sin fines de lucro y no partidistas que se unen por una causa (medio ambiente, derechos humanos).',
+                            ejemplo: 'Un colectivo de rescate animal o una organización de vecinos exigiendo seguridad.'
+                        },
+                        { 
+                            termino: 'Partidos Políticos', 
+                            icono: '✅', 
+                            definicion: 'Organizaciones con ideologías específicas que buscan el apoyo de la gente mediante elecciones para formar gobierno.',
+                            ejemplo: 'El PAN, PRI, MORENA o Movimiento Ciudadano compitiendo en igualdad de condiciones con reglas del INE.'
                         }
                     ]
                 },
                 {
                     id: 'transparencia',
-                    titulo: 'Transparencia',
+                    titulo: 'Transparencia y Cuentas Claras',
                     icon: 'fa-solid fa-magnifying-glass-chart',
                     color: 'from-cyan-500 to-blue-500',
                     bgColor: 'bg-cyan-50',
                     borderColor: 'border-cyan-200',
                     textColor: 'text-cyan-900',
-                    pda: 'Exige que el dinero de todos se use con honestidad.',
+                    pda: 'Exige que las autoridades rindan cuentas y no oculten información.',
                     conceptos: [
                         { 
-                            termino: 'Recursos Públicos', 
-                            icono: '💰', 
-                            definicion: 'Es el dinero que viene de los impuestos de todos. Se debe usar para el beneficio del pueblo, no para gastos personales.',
-                            ejemplo: 'El dinero de la cooperativa escolar es un recurso de todos; si un maestro lo usa para comprarse ropa, está robando (corrupción).'
+                            termino: 'Derecho a la Información', 
+                            icono: '📄', 
+                            definicion: 'Es tu derecho humano investigar, solicitar y recibir documentos o datos generados por el gobierno.',
+                            ejemplo: 'Usar la Plataforma Nacional de Transparencia para pedirle a tu municipio el contrato de compra de las patrullas.'
                         },
                         { 
-                            termino: 'Leyes de Transparencia', 
+                            termino: 'Transparencia', 
                             icono: '🔍', 
-                            definicion: 'Son las leyes que te dan el derecho de preguntar y saber exactamente en qué gasta el dinero el gobierno.',
-                            ejemplo: 'Mandar una carta al municipio exigiendo ver los recibos de cuánto costó pavimentar tu calle.'
+                            definicion: 'Es la "vitrina" que permite ver qué hacen los funcionarios. Existe la transparencia proactiva (publicar todo sin que se lo pidan).',
+                            ejemplo: 'Un portal de internet donde cualquiera puede ver cuánto gana el presidente o un maestro.'
                         },
                         { 
-                            termino: 'Transparencia Proactiva', 
-                            icono: '💻', 
-                            definicion: 'Es cuando el gobierno o la escuela publica sus gastos a la vista de todos sin que nadie se los tenga que exigir.',
-                            ejemplo: 'Una página de internet del gobierno donde puedes ver en tiempo real cuánto ganan los políticos y en qué gastan.'
+                            termino: 'Rendición de Cuentas', 
+                            icono: '📊', 
+                            definicion: 'Obligación del gobierno de justificar y explicar frente a los ciudadanos en qué y por qué gastó los recursos públicos.',
+                            ejemplo: 'El director de tu escuela haciendo una junta para explicar ticket por ticket en qué se usó la cuota escolar.'
                         }
                     ]
                 }
@@ -523,7 +517,7 @@
                                         </div>
                                         <h3 className="text-2xl font-bold text-slate-800 mb-3">Guía de Conceptos</h3>
                                         <p className="text-slate-600 leading-relaxed mb-6">
-                                            Repasa visualmente los temas fundamentales: Tipos de Normas, Cultura de Paz, Transparencia, Desigualdad y los hitos sociales de América Latina.
+                                            Repasa visualmente la teoría: Tipos de normas, mecanismos de participación, división de poderes, cultura de paz y derechos humanos.
                                         </p>
                                     </div>
                                     <button 
@@ -587,28 +581,28 @@
                                     </div>
                                 </div>
                                 
-                                <div className="p-6 md:p-8">
+                                <div className="p-6 md:p-8 bg-slate-50/50">
                                     <div className="grid md:grid-cols-2 gap-6">
                                         {tema.conceptos.map((concepto, i) => (
-                                            <div key={i} className={`${tema.bgColor} p-6 rounded-2xl border ${tema.borderColor} transition-transform hover:-translate-y-1 flex flex-col h-full`}>
+                                            <div key={i} className={`bg-white p-6 rounded-2xl border ${tema.borderColor} shadow-sm transition-transform hover:-translate-y-1 flex flex-col h-full`}>
                                                 <div className="flex items-center gap-3 mb-4">
                                                     <span className="text-3xl">{concepto.icono}</span>
                                                     <h5 className={`font-bold text-xl ${tema.textColor}`}>{concepto.termino}</h5>
                                                 </div>
                                                 
-                                                <div className="space-y-4 flex-grow">
-                                                    <div>
-                                                        <span className={`text-xs font-bold uppercase tracking-wider ${tema.textColor} opacity-70 block mb-1`}>Definición</span>
+                                                <div className="space-y-4 flex-grow flex flex-col">
+                                                    <div className="flex-grow">
+                                                        <span className={`text-xs font-bold uppercase tracking-wider ${tema.textColor} opacity-70 block mb-2`}>Concepto</span>
                                                         <p className="text-slate-700 text-base leading-relaxed">
                                                             {concepto.definicion}
                                                         </p>
                                                     </div>
                                                     
-                                                    <div className="bg-white/60 p-4 rounded-xl border border-white/40 mt-auto">
-                                                        <span className={`text-xs font-bold uppercase tracking-wider ${tema.textColor} opacity-70 block mb-1 flex items-center gap-1`}>
+                                                    <div className={`mt-4 p-4 rounded-xl border ${tema.bgColor} ${tema.borderColor} bg-opacity-40`}>
+                                                        <span className={`text-xs font-bold uppercase tracking-wider ${tema.textColor} opacity-80 block mb-1 flex items-center gap-1`}>
                                                             <i className="fa-solid fa-lightbulb"></i> Ejemplo
                                                         </span>
-                                                        <p className="text-slate-600 text-sm leading-relaxed italic">
+                                                        <p className="text-slate-700 text-sm leading-relaxed italic font-medium">
                                                             "{concepto.ejemplo}"
                                                         </p>
                                                     </div>
